@@ -1,0 +1,120 @@
+<!--
+   Taitl Opensource Parent is parent pom.xml for all Taitl open source maven projects. It defines
+   build properties, dependencies and plugin configruations that are common to all 
+   our projects. The properties, dependencies and plugin configurations are inherited
+   from its parent project, taitl-opensource-root. Taitl Opensource Parent adds one dependency 
+   (taitl-opensource-commons) so that any further Taitl and MesArt project could simply extend 
+   taitl-opensource-parent, and the dependency to taitl-opensource-commons would be auto included.
+   
+   Parent project: taitl-opensource-root   
+   
+   This project defines, among other things:
+      <taitl-release-version> property, a shared version number for all Taitl projects
+      Some basic dependencies (Apache Commons, JUnit, Mockito, Powermock)
+      Resource filtering - a property referred by a resource file (${my-property}) will 
+         be substituted with its value from your POM file, if it is defined.
+      Excludes /integration tests from regular build, includes into 'intergation-test' 
+         and 'verify' goals (failsafe plugin)
+      Enforces test coverage levels (Jacoco plugin)
+      Enforces coding standards (Checkstyle plugin)
+      Packages your project as a JAR file with all dependencies included
+      Allows to designate a class as your application's main class in your manifest
+         Define the <mainClass> property in your project's POM file
+      Adds Findbugs, PMD, JXR and JavaDoc plugins.
+     
+   This project draws all settings from Taitl Opensource Root, and declares a single dependency
+   to Taitl Opensource Commons. All other dependencies are located in Taitl Opensource Parent.
+
+   Copyright (c) Taitl Design, LLC.  
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>com.taitl</groupId>
+      <!-- See taitl-opensource-root for properties, dependencies and plugin settings -->
+      <artifactId>taitl-opensource-root</artifactId>
+      <version>0.0.0-SNAPSHOT</version>
+   </parent>
+   <artifactId>taitl-opensource-parent</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <name>taitl-opensource-parent</name>
+   <packaging>pom</packaging>
+   <description>Parent pom.xml for all Taitl projects</description>
+   <dependencies>
+      <dependency>
+         <groupId>com.taitl</groupId>
+         <artifactId>taitl-opensource-commons</artifactId>
+         <version>${taitl-release-version}</version>
+      </dependency>
+   </dependencies>
+   <build>
+      <plugins>
+         <!-- Enforce coding standards with Checkstyle -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.17</version>
+            <executions>
+               <execution>
+                  <id>validate</id>
+                  <phase>validate</phase>
+                  <configuration>
+                     <!-- Defined in taitl-opensource-dev -->
+                     <configLocation>config/checkstyle/Taitl Coding Standards.Checkstyle Settings - Java.xml</configLocation>
+                     <encoding>UTF-8</encoding>
+                     <consoleOutput>true</consoleOutput>
+                     <violationSeverity>warning</violationSeverity>
+                     <failsOnError>true</failsOnError>
+                     <linkXRef>false</linkXRef>
+                  </configuration>
+                  <goals>
+                     <goal>check</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <dependencies>
+               <dependency>
+                  <groupId>com.taitl</groupId>
+                  <artifactId>taitl-opensource-dev</artifactId>
+                  <version>${taitl-release-version}</version>
+               </dependency>
+            </dependencies>
+         </plugin>
+      </plugins>
+      <!-- Added by Eclipse to ignore Checkstyle's check goal, since it is not part of Eclipse project lifecycle -->
+      <pluginManagement>
+         <plugins>
+            <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+            <plugin>
+               <groupId>org.eclipse.m2e</groupId>
+               <artifactId>lifecycle-mapping</artifactId>
+               <version>1.0.0</version>
+               <configuration>
+                  <lifecycleMappingMetadata>
+                     <pluginExecutions>
+                        <pluginExecution>
+                           <pluginExecutionFilter>
+                              <groupId>
+                                 org.apache.maven.plugins
+                              </groupId>
+                              <artifactId>
+                                 maven-checkstyle-plugin
+                              </artifactId>
+                              <versionRange>[2.17,)</versionRange>
+                              <goals>
+                                 <goal>check</goal>
+                              </goals>
+                           </pluginExecutionFilter>
+                           <action>
+                              <ignore></ignore>
+                           </action>
+                        </pluginExecution>
+                     </pluginExecutions>
+                  </lifecycleMappingMetadata>
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+</project>
